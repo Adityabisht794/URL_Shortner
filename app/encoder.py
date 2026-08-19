@@ -1,9 +1,17 @@
-ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+"""
+Base62 encoder.
+
+Level 1 strategy: let SQLite's AUTOINCREMENT hand out the next integer id,
+then encode that id as base62. This is deliberately the simplest possible
+ID-generation strategy - and also the first thing that breaks the moment
+you want more than one database instance (see LIMITATIONS.md, section 1).
+"""
+
+ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 BASE = len(ALPHABET)
 
 
 def encode(num: int) -> str:
-    """Turn a DB auto-increment id into a short base62 code."""
     if num == 0:
         return ALPHABET[0]
     chars = []
@@ -13,8 +21,8 @@ def encode(num: int) -> str:
     return "".join(reversed(chars))
 
 
-def decode(code: str) -> int:
+def decode(short_code: str) -> int:
     num = 0
-    for char in code:
+    for char in short_code:
         num = num * BASE + ALPHABET.index(char)
     return num

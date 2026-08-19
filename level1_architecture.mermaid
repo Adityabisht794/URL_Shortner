@@ -1,0 +1,19 @@
+graph TD
+    Client["Client / Browser"]
+    API["FastAPI App<br/>(single process)"]
+    DB[("SQLite<br/>shortener.db<br/>single file")]
+
+    Client -- "1. POST /api/shorten" --> API
+    API -- "2. INSERT row, get autoincrement id" --> DB
+    DB -- "3. id back" --> API
+    API -- "4. base62(id) = short_code" --> API
+    API -- "5. {short_code, short_url}" --> Client
+
+    Client2["Client / Browser"]
+    Client2 -- "GET /{short_code}" --> API
+    API -- "SELECT WHERE short_code = ?" --> DB
+    API -- "UPDATE click_count += 1" --> DB
+    API -- "307 Redirect to long_url" --> Client2
+
+    style DB fill:#f96,stroke:#333,stroke-width:2px
+    style API fill:#69f,stroke:#333,stroke-width:2px
