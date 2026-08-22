@@ -1,27 +1,25 @@
-from pydantic import BaseModel, HttpUrl
 from datetime import datetime
+
+from pydantic import BaseModel, HttpUrl
 
 
 class ShortenRequest(BaseModel):
-    url: HttpUrl
+    long_url: HttpUrl
 
 
 class ShortenResponse(BaseModel):
     short_code: str
     short_url: str
-    original_url: str
-
-
-class ResolveResponse(BaseModel):
-    short_code: str
-    original_url: str
+    long_url: str
 
 
 class StatsResponse(BaseModel):
     short_code: str
-    original_url: str
+    long_url: str
+    click_count: int
     created_at: datetime
-    visit_count: int
 
-    class Config:
-        from_attributes = True
+
+class HealthResponse(BaseModel):
+    status: str
+    level: int
